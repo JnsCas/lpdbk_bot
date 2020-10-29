@@ -1,0 +1,19 @@
+{
+  "name": "lpdbk_bot",
+  "version": "0.0.1",
+  "description": "Los pibe del bunker Bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/JnsCas/lpdbk_bot.git"
+  },
+  "author": "jnscas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JnsCas/lpdbk_bot/issues"
+  },
+  "homepage": "https://github.com/JnsCas/lpdbk_bot#readme"
+}
