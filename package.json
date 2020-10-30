@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/JnsCas/lpdbk_bot/issues"
   },
-  "homepage": "https://github.com/JnsCas/lpdbk_bot#readme"
+  "homepage": "https://github.com/JnsCas/lpdbk_bot#readme",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "telegraf": "^3.38.0"
+  }
 }
