@@ -28,7 +28,7 @@ module.exports = {
         case 'delete':
         case 'eliminar':
           const indexToDelete = Number(secondParameter) - 1;
-          if (indexToDelete > seriesArray.length || indexToDelete < 1) {
+          if (indexToDelete > seriesArray.length || indexToDelete < 0) {
             return;
           }
           writeResult(seriesArray.splice(indexToDelete, 1));
