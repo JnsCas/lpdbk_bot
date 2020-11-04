@@ -1,4 +1,4 @@
-const randomNumber = require('../util/randomNumber');
+const { randomNumber } = require('../util/randomNumber');
 
 const MAX_NUMBER = 3;
 

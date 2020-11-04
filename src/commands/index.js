@@ -4,7 +4,10 @@ const commands = [
   require('./dolaroficial'),
   require('./diego'),
   require('./asados'),
-  require('./series')
+  require('./series'),
+  require('./faltaenvido'),
+  require('./quiero'),
+  require('./noquiero')
 ]
 
 module.exports = (bot) => {
