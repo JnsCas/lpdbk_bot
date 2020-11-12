@@ -14,15 +14,11 @@ module.exports = {
       ctx.reply(`La falta ya está cantada por ${status.username}.${helpMessage}`);
     } else {
       const usernameFrom = ctx.update.message.from.username || ctx.update.message.from.first_name;
-      if (usernameFrom === status.username) {
-        ctx.reply(`Escuchame una cosita ${usernameFrom}, vos sos boludo?\nVos fuiste el que echó la falta!`);
-      } else {
-        status.isCantado = true;
-        status.username = usernameFrom;
-        const phrase = phrases[randomNumber(phrases.length) - 1];
-        const result = "FALTA ENVIDOOOO CHEEEE\n" + phrase.replace('%s', usernameFrom) + helpMessage;
-        ctx.reply(result);
-      }
+      status.isCantado = true;
+      status.username = usernameFrom;
+      const phrase = phrases[randomNumber(phrases.length) - 1];
+      const result = "FALTA ENVIDOOOO CHEEEE\n" + phrase.replace('%s', usernameFrom) + helpMessage;
+      ctx.reply(result);
     }
   },
   status
