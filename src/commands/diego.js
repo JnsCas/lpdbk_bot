@@ -1,5 +1,5 @@
 const { randomNumber } = require('../util/randomNumber');
-const MAX_NUMBER = 52;
+const MAX_NUMBER = 53;
 
 module.exports = {
   name: 'diego',

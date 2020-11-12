@@ -18,6 +18,7 @@
   "homepage": "https://github.com/JnsCas/lpdbk_bot#readme",
   "dependencies": {
     "axios": "^0.21.0",
+    "cron": "^1.8.2",
     "jest": "^26.6.1",
     "telegraf": "^3.38.0"
   }

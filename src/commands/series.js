@@ -2,7 +2,7 @@ const fs = require('fs');
 
 function writeResult(arrayToWrite) {
   const data = JSON.stringify(arrayToWrite);
-  fs.writeFile(__dirname + '/../resources/lists/series.json', data, (err) => {
+  fs.writeFile(__dirname + '/../../resources/lists/series.json', data, (err) => {
     if (err) {
       throw err;
     }
