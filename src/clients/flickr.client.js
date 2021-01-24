@@ -1,6 +1,5 @@
 const Flickr = require('flickr-sdk');
 const { randomNumber } = require('../util/randomNumber');
-
 const FLICKR_USER_ID = process.env.FLICKR_USER_ID;
 const FLICKR_ENDPOINT = 'https://www.flickr.com/photos'
 
@@ -10,6 +9,8 @@ const auth = Flickr.OAuth.createPlugin(
   process.env.FLICKR_OAUTH_TOKEN,
   process.env.FLICKR_OAUTH_TOKEN_SECRET
 );
+
+const flickr = new Flickr(auth);
 
 module.exports = {
   uploadPhoto: (file, tag) => {
@@ -21,7 +22,6 @@ module.exports = {
     });
   },
   getPhotoRandomByTag: async (tag) => {
-    const flickr = new Flickr(auth);
     const { body } = await flickr.photos.search({
       user_id: 'me',
       tags: tag
