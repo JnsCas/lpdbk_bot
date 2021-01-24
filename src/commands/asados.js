@@ -1,10 +1,9 @@
-const { randomNumber } = require('../util/randomNumber');
-
-const MAX_NUMBER = 3;
+const flickrClient = require('../clients/flickr.client');
 
 module.exports = {
   name: 'asados',
-  handle: (ctx) => {
-    ctx.replyWithPhoto({ source: `resources/images/asados/${randomNumber(MAX_NUMBER)}.jpg` })
+  handle: async (ctx) => {
+    const urlPhoto = await flickrClient.getPhotoRandomByTag('asados');
+    ctx.replyWithPhoto(urlPhoto);
   }
 }
