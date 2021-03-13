@@ -1,42 +1,41 @@
-const fs = require('fs');
-
-function writeResult(arrayToWrite) {
-  const data = JSON.stringify(arrayToWrite);
-  fs.writeFile(__dirname + '/../../resources/lists/series.json', data, (err) => {
-    if (err) {
-      throw err;
-    }
-    console.log('Series data saved.');
-  });
-}
+const { seriesCollection } = require('../db');
+const { getMessageParameters } = require('../util/messageParameters');
 
 module.exports = {
   name: 'series',
-  handle: (ctx) => {
-    const seriesArray = require('../../resources/lists/series.json');
-    const messageTextSplited = ctx.update.message.text.split(' ');
-    const parameters = messageTextSplited.slice(1, messageTextSplited.length);
-    if (parameters.length > 1) {
-      const firstParameter = parameters[0];
-      const secondParameter = parameters.slice(1 , parameters.length).join(' ');
-      switch (firstParameter) {
+  handle: async (ctx) => {
+    const seriesRecord = await seriesCollection.find({ chatId: process.env.CHAT_ID }); //FIXME env
+    const parameters = getMessageParameters(ctx);
+
+    let names = seriesRecord.names;
+    if (parameters.hasSecondParameter) {
+      switch (parameters.first) {
         case 'add':
         case 'agregar':
-          writeResult(seriesArray.push(secondParameter));
+          const recordUpdated = await seriesCollection.updateOne( {
+            _id: seriesRecord._id,
+            $push: { names: parameters.second }
+          });
+          names = recordUpdated.names;
           break;
 
         case 'delete':
         case 'eliminar':
-          const indexToDelete = Number(secondParameter) - 1;
-          if (indexToDelete > seriesArray.length || indexToDelete < 0) {
+          const indexToDelete = Number(parameters.second) - 1;
+          if (indexToDelete > seriesRecord.names.length || indexToDelete < 0) {
             return;
           }
-          writeResult(seriesArray.splice(indexToDelete, 1));
+          const namesToUpdate = seriesRecord.names.splice(indexToDelete, 1);
+          await seriesCollection.updateOne( {
+            _id: seriesRecord._id,
+            $set: { names: namesToUpdate }
+          });
+          names = namesToUpdate;
           break;
       }
     }
 
-    const result = seriesArray.map((serie, index) => `${index + 1}) ${serie}`).join('\n');
+    const result = names.map((serie, index) => `${index + 1}) ${serie}`).join('\n');
     ctx.reply(result);
   }
 }
