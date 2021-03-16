@@ -1,4 +1,4 @@
-const getMessageParameters = (ctx) => { //FIXME test it
+const getMessageParameters = (ctx) => {
   const messageTextSplited = ctx.update.message.text.split(' ');
   const parameters = messageTextSplited.slice(1, messageTextSplited.length);
   const hasFirstParameter = parameters.length > 0;

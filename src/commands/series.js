@@ -1,10 +1,10 @@
-const { seriesCollection } = require('../db');
+const { getCollectionByName } = require('../db');
 const { getMessageParameters } = require('../util/messageParameters');
 
 module.exports = {
   name: 'series',
   handle: async (ctx) => {
-    const seriesRecord = await seriesCollection.find({ chatId: process.env.CHAT_ID }); //FIXME env
+    const seriesRecord = await getCollectionByName('series').find({ chatId: ctx.message.chat.id });
     const parameters = getMessageParameters(ctx);
 
     let names = seriesRecord.names;

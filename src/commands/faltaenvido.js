@@ -1,5 +1,5 @@
 const phrases = require('../../resources/lists/faltaenvido.json'); //TODO delete this file
-const { faltaenvidoCollection } = require('../db');
+const { getCollectionByName } = require('../db');
 const { randomNumber } = require('../util/randomNumber');
 
 module.exports = {
@@ -7,7 +7,7 @@ module.exports = {
   handle: async (ctx) => {
     const helpMessage = '\n\nPara contestar usa los comandos /quiero ó /noquiero.'
 
-    const faltaenvidoRecord = await faltaenvidoCollection.find({ chatId: process.env.CHAT_ID }); //FIXME env
+    const faltaenvidoRecord = await getCollectionByName('falta-envido').find({ chatId: ctx.message.chat.id });
     if (faltaenvidoRecord.cantadoBy) {
       ctx.reply(`La falta ya está cantada por ${faltaenvidoRecord.cantadoBy}.${helpMessage}`);
     } else {

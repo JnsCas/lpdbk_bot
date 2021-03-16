@@ -7,11 +7,15 @@ const token = process.env.BOT_TOKEN;
 
 try {
   const bot = new Telegraf(token);
-  await initDB();
+  bot.start(async (ctx) => {
+    await initDB(ctx);
+    await ctx.reply('Hola! 😀')
+  });
   bot.on('sticker', (ctx) => ctx.reply('👍'))
-  commands(app);
-  scheduler(app);
-  bot.launch();
-} finally {
+  commands(bot);
+  scheduler(bot);
+  await bot.launch();
+} catch (e) {
   await closeDB();
+  throw e;
 }
