@@ -4,7 +4,8 @@ const { getMessageParameters } = require('../util/messageParameters');
 module.exports = {
   name: 'series',
   handle: async (ctx) => {
-    const seriesRecord = await getCollectionByName('series').find({ chatId: ctx.message.chat.id });
+    const seriesCollection = getCollectionByName('series');
+    const seriesRecord = await seriesCollection.find({ chatId: ctx.message.chat.id });
     const parameters = getMessageParameters(ctx);
 
     let names = seriesRecord.names;
@@ -25,12 +26,12 @@ module.exports = {
           if (indexToDelete > seriesRecord.names.length || indexToDelete < 0) {
             return;
           }
-          const namesToUpdate = seriesRecord.names.splice(indexToDelete, 1);
+          seriesRecord.names.splice(indexToDelete, 1);
           await seriesCollection.updateOne( {
             _id: seriesRecord._id,
-            $set: { names: namesToUpdate }
+            $set: { names: seriesRecord.names }
           });
-          names = namesToUpdate;
+          names = seriesRecord.names;
           break;
       }
     }

@@ -25,10 +25,12 @@ describe('falta envido command', () => {
   beforeEach(() => {
     findMock = jest.fn().mockResolvedValueOnce({
       _id: 1,
+      chatId: 2,
       cantadoBy: undefined,
       phrases: ['%s cantó la falta']
     }).mockResolvedValueOnce({
       _id: 1,
+      chatId: 2,
       cantadoBy: 'jns',
       phrases: ['%s cantó la falta']
     });
@@ -50,8 +52,7 @@ describe('falta envido command', () => {
 
     await faltaEnvido.handle(ctx);
 
-    expect(findMock).toHaveBeenCalled();
-    expect(findMock.mock.calls[0][0]).toStrictEqual({ chatId: 1 });
+    expect(findMock).toHaveBeenCalledWith({ chatId: 1 });
     expect(ctx.reply).toHaveBeenCalled();
     expect(ctx.reply.mock.calls[0][0].includes('FALTA ENVIDOOOO CHEEEE')).toBe(true);
     expect(updateOneMock).toHaveBeenCalledWith({ _id: 1, $set: { cantadoBy: 'jns' } });
