@@ -3,10 +3,8 @@ const commands = require('./commands');
 const scheduler = require('./scheduler');
 const { initDB, closeDB } = require('./db');
 
-const token = process.env.BOT_TOKEN;
-
 try {
-  const bot = new Telegraf(token);
+  const bot = new Telegraf(process.env.BOT_TOKEN);
   bot.start(async (ctx) => {
     await initDB(ctx);
     await ctx.reply('Hola! 😀')

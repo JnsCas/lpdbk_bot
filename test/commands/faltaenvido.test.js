@@ -1,71 +1,129 @@
 const faltaEnvido  = require('../../src/commands/faltaenvido');
+jest.mock('../../src/db/index');
+const { getCollectionByName } = require('../../src/db/index');
 
 describe('falta envido command', () => {
 
+  const ctx = {
+    update: {
+      message: {
+        from: {
+          username: 'jns'
+        }
+      }
+    },
+    message: {
+      chat: {
+        id: 1
+      }
+    },
+    reply: jest.fn()
+  };
+
+  let findMock, updateOneMock;
+
+  beforeEach(() => {
+    findMock = jest.fn().mockResolvedValueOnce({
+      _id: 1,
+      cantadoBy: undefined,
+      phrases: ['%s cantó la falta']
+    }).mockResolvedValueOnce({
+      _id: 1,
+      cantadoBy: 'jns',
+      phrases: ['%s cantó la falta']
+    });
+    updateOneMock = jest.fn();
+
+    getCollectionByName.mockImplementation((_) => {
+      return {
+        find: findMock,
+        updateOne: updateOneMock
+      }
+    });
+  });
+
   afterEach(() => {
-    faltaEnvido.status.isCantado = false;
-    faltaEnvido.status.username = undefined;
+    jest.clearAllMocks();
   });
 
-  test('shot falta envido', () => {
-    const ctx = {
-      update: {
-        message: {
-          from: {
-            username: 'jns'
-          }
-        }
-      },
-      reply: jest.fn()
-    }
+  test('shot falta envido', async () => {
+    const findMock = jest.fn().mockResolvedValue({
+      _id: 1,
+      cantadoBy: undefined,
+      phrases: ['%s cantó la falta']
+    });
+    const updateOneMock = jest.fn();
 
-    faltaEnvido.handle(ctx);
+    getCollectionByName.mockImplementation((_) => {
+      return {
+        find: findMock,
+        updateOne: updateOneMock
+      }
+    });
+
+    await faltaEnvido.handle(ctx);
+
+    expect(findMock).toHaveBeenCalled();
+    expect(findMock.mock.calls[0][0]).toStrictEqual({ chatId: 1 });
     expect(ctx.reply).toHaveBeenCalled();
     expect(ctx.reply.mock.calls[0][0].includes('FALTA ENVIDOOOO CHEEEE')).toBe(true);
-    expect(faltaEnvido.status.isCantado).toBe(true);
-    expect(faltaEnvido.status.username).toBe('jns');
+    expect(updateOneMock).toHaveBeenCalledWith({ _id: 1, $set: { cantadoBy: 'jns' } });
   });
-  test('shot falta envido and reject shot twice', () => {
-    const ctx = {
-      update: {
-        message: {
-          from: {
-            username: 'jns'
-          }
-        }
-      },
-      reply: jest.fn()
-    }
+  test('shot falta envido and reject shot twice', async () => {
 
-    faltaEnvido.handle(ctx);
+    const findMock = jest.fn().mockResolvedValueOnce({
+      _id: 1,
+      cantadoBy: undefined,
+      phrases: ['%s cantó la falta']
+    }).mockResolvedValueOnce({
+      _id: 1,
+      cantadoBy: 'jns',
+      phrases: ['%s cantó la falta']
+    });
+    const updateOneMock = jest.fn();
+
+    getCollectionByName.mockImplementation((_) => {
+      return {
+        find: findMock,
+        updateOne: updateOneMock
+      }
+    });
+
+    await faltaEnvido.handle(ctx);
+
     expect(ctx.reply).toHaveBeenCalled();
     expect(ctx.reply.mock.calls[0][0].includes('FALTA ENVIDOOOO CHEEEE')).toBe(true);
-    expect(faltaEnvido.status.isCantado).toBe(true);
-    expect(faltaEnvido.status.username).toBe('jns');
+    expect(updateOneMock).toHaveBeenCalledWith({ _id: 1, $set: { cantadoBy: 'jns' } });
 
-    faltaEnvido.handle(ctx);
+    await faltaEnvido.handle(ctx);
     expect(ctx.reply).toHaveBeenCalled();
     expect(ctx.reply.mock.calls[1][0].includes('La falta ya está cantada por jns.')).toBe(true);
-    expect(faltaEnvido.status.isCantado).toBe(true);
-    expect(faltaEnvido.status.username).toBe('jns');
+    expect(updateOneMock).toHaveBeenCalledTimes(1);
   });
 
-  test('use firstname', () => {
-    const ctx = {
-      update: {
-        message: {
-          from: {
-            username: undefined,
-            first_name: 'jns_first_name'
-          }
-        }
-      },
-      reply: jest.fn()
-    }
+  test('use firstname', async () => {
+    ctx.update.message.from = {
+      username: undefined,
+      first_name: 'jns_first_name'
+    };
 
-    faltaEnvido.handle(ctx);
+    const findMock = jest.fn().mockResolvedValueOnce({
+      _id: 1,
+      cantadoBy: undefined,
+      phrases: ['%s cantó la falta']
+    });
+    const updateOneMock = jest.fn();
+
+    getCollectionByName.mockImplementation((_) => {
+      return {
+        find: findMock,
+        updateOne: updateOneMock
+      }
+    });
+
+    await faltaEnvido.handle(ctx);
+
     expect(ctx.reply).toHaveBeenCalled();
-    expect(faltaEnvido.status.isCantado).toBe(true);
-    expect(faltaEnvido.status.username).toBe('jns_first_name');
+    expect(updateOneMock).toHaveBeenCalledWith({ _id: 1, $set: { cantadoBy: 'jns_first_name' } });
   });
 });
