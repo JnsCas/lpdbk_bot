@@ -47,19 +47,6 @@ describe('falta envido command', () => {
   });
 
   test('shot falta envido', async () => {
-    const findMock = jest.fn().mockResolvedValue({
-      _id: 1,
-      cantadoBy: undefined,
-      phrases: ['%s cantó la falta']
-    });
-    const updateOneMock = jest.fn();
-
-    getCollectionByName.mockImplementation((_) => {
-      return {
-        find: findMock,
-        updateOne: updateOneMock
-      }
-    });
 
     await faltaEnvido.handle(ctx);
 
@@ -70,24 +57,6 @@ describe('falta envido command', () => {
     expect(updateOneMock).toHaveBeenCalledWith({ _id: 1, $set: { cantadoBy: 'jns' } });
   });
   test('shot falta envido and reject shot twice', async () => {
-
-    const findMock = jest.fn().mockResolvedValueOnce({
-      _id: 1,
-      cantadoBy: undefined,
-      phrases: ['%s cantó la falta']
-    }).mockResolvedValueOnce({
-      _id: 1,
-      cantadoBy: 'jns',
-      phrases: ['%s cantó la falta']
-    });
-    const updateOneMock = jest.fn();
-
-    getCollectionByName.mockImplementation((_) => {
-      return {
-        find: findMock,
-        updateOne: updateOneMock
-      }
-    });
 
     await faltaEnvido.handle(ctx);
 
@@ -106,20 +75,6 @@ describe('falta envido command', () => {
       username: undefined,
       first_name: 'jns_first_name'
     };
-
-    const findMock = jest.fn().mockResolvedValueOnce({
-      _id: 1,
-      cantadoBy: undefined,
-      phrases: ['%s cantó la falta']
-    });
-    const updateOneMock = jest.fn();
-
-    getCollectionByName.mockImplementation((_) => {
-      return {
-        find: findMock,
-        updateOne: updateOneMock
-      }
-    });
 
     await faltaEnvido.handle(ctx);
 
