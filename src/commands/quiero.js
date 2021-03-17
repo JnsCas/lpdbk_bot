@@ -4,7 +4,8 @@ const { randomNumberRange } = require('../util/randomNumber');
 module.exports = {
   name: 'quiero',
   handle: async (ctx) => {
-    const faltaenvidoRecord = await getCollectionByName('falta-envido').find({ chatId: ctx.message.chat.id });
+    const faltaenvidoCollection = getCollectionByName('falta-envido');
+    const faltaenvidoRecord = await faltaenvidoCollection.find({ chatId: ctx.message.chat.id });
     if (!faltaenvidoRecord.cantadoBy) {
       ctx.reply('Nadie cantó la falta che.');
     } else {

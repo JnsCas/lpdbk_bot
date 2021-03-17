@@ -23,6 +23,7 @@ describe('series command', () => {
   beforeEach(() => {
     findMock = jest.fn().mockResolvedValueOnce({
       _id: 1,
+      chatId: 1,
       names: [
         "Serie1",
         "Serie2",

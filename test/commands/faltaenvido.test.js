@@ -25,12 +25,12 @@ describe('falta envido command', () => {
   beforeEach(() => {
     findMock = jest.fn().mockResolvedValueOnce({
       _id: 1,
-      chatId: 2,
+      chatId: 1,
       cantadoBy: undefined,
       phrases: ['%s cantó la falta']
     }).mockResolvedValueOnce({
       _id: 1,
-      chatId: 2,
+      chatId: 1,
       cantadoBy: 'jns',
       phrases: ['%s cantó la falta']
     });
