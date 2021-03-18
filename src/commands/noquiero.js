@@ -1,16 +1,16 @@
-const faltaEnvido = require('./faltaenvido');
+const { getCollectionByName } = require('../db');
 
 module.exports = {
   name: 'noquiero',
-  handle: (ctx) => {
+  handle: async (ctx) => {
+    const faltaenvidoRecord = await getCollectionByName('falta-envido').find({ chatId: ctx.message.chat.id });
     const username = ctx.update.message.from.username || ctx.update.message.from.first_name;
-    if (!faltaEnvido.status.isCantado) {
+    if (!faltaenvidoRecord.cantadoBy) {
       ctx.reply('Nadie cantó la falta che.');
-    } else if (username === faltaEnvido.status.username) {
-      ctx.reply(`Escuchame una cosita ${username}, vos sos boludo?\nVos fuiste el que echó la falta!`); //FIXME
+    } else if (username === faltaenvidoRecord.cantadoBy) {
+      ctx.reply(`Vos fuiste el que echó la falta @${username}!`);
     } else {
-      faltaEnvido.status.isCantado = false;
-      faltaEnvido.status.username = undefined;
+      await faltaenvidoCollection.updateOne({ _id: faltaenvidoRecord._id, $set: { cantadoBy: undefined } });
       ctx.reply('Se cagaron hasta las patas.');
     }
   }

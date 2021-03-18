@@ -7,7 +7,8 @@ const commands = [
   require('./series'),
   require('./faltaenvido'),
   require('./quiero'),
-  require('./noquiero')
+  require('./noquiero'),
+  require('./todos')
 ]
 
 module.exports = (bot) => {

@@ -4,7 +4,7 @@
   "description": "Los pibe del bunker Bot",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "npx jest --verbose"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
     "cron": "^1.8.2",
     "flickr-sdk": "^3.10.0",
     "jest": "^26.6.1",
+    "mongodb": "^3.6.4",
     "telegraf": "^4.0.2"
   }
 }

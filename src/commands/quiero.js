@@ -1,28 +1,29 @@
-const faltaEnvido = require('./faltaenvido');
+const { getCollectionByName } = require('../db');
 const { randomNumberRange } = require('../util/randomNumber');
 
 module.exports = {
   name: 'quiero',
-  handle: (ctx) => {
-    if (!faltaEnvido.status.isCantado) {
+  handle: async (ctx) => {
+    const faltaenvidoCollection = getCollectionByName('falta-envido');
+    const faltaenvidoRecord = await faltaenvidoCollection.find({ chatId: ctx.message.chat.id });
+    if (!faltaenvidoRecord.cantadoBy) {
       ctx.reply('Nadie cantó la falta che.');
     } else {
       const usernameTo = ctx.update.message.from.username || ctx.update.message.from.first_name;
-      if (usernameTo === faltaEnvido.status.username) {
-        ctx.reply(`Escuchame una cosita ${usernameTo}, vos sos boludo?\nVos fuiste el que echó la falta!`); //FIXME
+      if (usernameTo === faltaenvidoRecord.cantadoBy) {
+        ctx.reply(`Vos fuiste el que echó la falta @${usernameTo}!`);
       } else {
         const tantoFrom = randomNumberRange(20, 33);
         const tantoTo = randomNumberRange(20, 33);
-        const result = `Tantos de @${faltaEnvido.status.username}: ${tantoFrom}.\nTantos de @${usernameTo}: ${tantoTo}.\n\n`;
+        const result = `Tantos de @${faltaenvidoRecord.cantadoBy}: ${tantoFrom}.\nTantos de @${usernameTo}: ${tantoTo}.\n\n`;
         if (tantoFrom === tantoTo) {
-          ctx.reply(result + `@${faltaEnvido.status.username} ganó de mano.`);
+          ctx.reply(`${result}@${faltaenvidoRecord.cantadoBy} ganó de mano.`);
         } else if (tantoFrom > tantoTo) {
-          ctx.reply(result + `@${faltaEnvido.status.username} ganó.`);
+          ctx.reply(`${result}@${faltaenvidoRecord.cantadoBy} ganó.`);
         } else {
-          ctx.reply(result + `@${usernameTo} ganó.`);
+          ctx.reply(`${result}@${usernameTo} ganó.`);
         }
-        faltaEnvido.status.isCantado = false;
-        faltaEnvido.status.username = undefined;
+        await faltaenvidoCollection.updateOne({ _id: faltaenvidoRecord._id, $set: { cantadoBy: undefined } });
       }
     }
   }

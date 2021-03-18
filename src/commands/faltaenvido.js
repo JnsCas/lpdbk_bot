@@ -1,25 +1,21 @@
-const phrases = require('../../resources/lists/faltaenvido.json');
+const { getCollectionByName } = require('../db');
 const { randomNumber } = require('../util/randomNumber');
-
-let status = {
-  isCantado: false,
-  username: undefined
-};
 
 module.exports = {
   name: 'faltaenvido',
-  handle: (ctx) => {
+  handle: async (ctx) => {
     const helpMessage = '\n\nPara contestar usa los comandos /quiero ó /noquiero.'
-    if (status.isCantado) {
-      ctx.reply(`La falta ya está cantada por ${status.username}.${helpMessage}`);
+
+    const faltaenvidoCollection = getCollectionByName('falta-envido');
+    const faltaenvidoRecord = await faltaenvidoCollection.find({ chatId: ctx.message.chat.id });
+    if (faltaenvidoRecord.cantadoBy) {
+      ctx.reply(`La falta ya está cantada por ${faltaenvidoRecord.cantadoBy}.${helpMessage}`);
     } else {
       const usernameFrom = ctx.update.message.from.username || ctx.update.message.from.first_name;
-      status.isCantado = true;
-      status.username = usernameFrom;
-      const phrase = phrases[randomNumber(phrases.length) - 1];
-      const result = "FALTA ENVIDOOOO CHEEEE\n" + phrase.replace('%s', usernameFrom) + helpMessage;
-      ctx.reply(result);
+      const phrase = faltaenvidoRecord.phrases[randomNumber(faltaenvidoRecord.phrases.length) - 1];
+      ctx.reply(`FALTA ENVIDOOOO CHEEEE\n${phrase.replace('%s', usernameFrom)}${helpMessage}`);
+
+      await faltaenvidoCollection.updateOne({ _id: faltaenvidoRecord._id, $set: { cantadoBy: usernameFrom } });
     }
-  },
-  status
+  }
 }
