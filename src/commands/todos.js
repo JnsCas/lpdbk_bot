@@ -4,12 +4,14 @@ const { getMessageParameters } = require('../util/messageParameters');
 module.exports = {
   name: 'todos',
   handle: async (ctx) => {
-    const todosRecord = await getCollectionByName('todos').find({ chatId: ctx.message.chat.id });
     const usernameRequest = ctx.update.message.from.username;
     if (!usernameRequest) {
       ctx.reply('No podés usar este comando si no tenés un usuario creado. Create uno por favor.');
       return;
     }
+
+    const todosCollection = getCollectionByName('todos');
+    const todosRecord = await todosCollection.find({ chatId: ctx.message.chat.id });
 
     const parameters = getMessageParameters(ctx);
 
@@ -17,21 +19,32 @@ module.exports = {
       const todosUsernamesCandidates = todosRecord.usernames.filter((username) => username !== usernameRequest);
       if (todosUsernamesCandidates.length === todosRecord.usernames.length) {
         ctx.reply(`Para poder utilizar este comando necesitas inscribirte enviando "/todos in"`);
-        return;
+      } else if (todosUsernamesCandidates.length === 0) {
+        ctx.reply(`No hay nadie inscripto para arrobar 🤷‍`);
+      } else {
+        ctx.reply(todosUsernamesCandidates.reduce((acc, username) => `${acc}\n@${username}`));
       }
-      ctx.reply(todosUsernamesCandidates.reduce((acc, username) => `${acc}\n@${username}`));
     } else {
+      const alreadyExists = todosRecord.usernames.includes(usernameRequest);
       switch (parameters.first) {
         case 'in':
+          if (alreadyExists) {
+            ctx.reply('No podés inscribirte dos veces!')
+            return;
+          }
           await todosCollection.updateOne( {
             _id: todosRecord._id,
-            $push: { usernames: parameters.second }
+            $push: { usernames: usernameRequest }
           });
           ctx.reply('Agregado 👍');
           break;
 
         case 'out':
-          const usernamesToUpdate = todosRecord.usernames.filter((username) => username !== parameters.second);
+          if (!alreadyExists) {
+            ctx.reply('No estabas inscripto 🤷‍');
+            return;
+          }
+          const usernamesToUpdate = todosRecord.usernames.filter((username) => username !== usernameRequest);
           await todosCollection.updateOne( {
             _id: todosRecord._id,
             $set: { names: usernamesToUpdate }
