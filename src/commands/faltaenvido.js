@@ -1,4 +1,3 @@
-const phrases = require('../../resources/lists/faltaenvido.json'); //TODO delete this file
 const { getCollectionByName } = require('../db');
 const { randomNumber } = require('../util/randomNumber');
 
