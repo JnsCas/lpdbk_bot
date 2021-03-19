@@ -10,8 +10,8 @@ module.exports = {
       return;
     }
 
-    const todosCollection = getCollectionByName('todos');
-    const todosRecord = await todosCollection.find({ chatId: ctx.message.chat.id });
+    const todosCollection = await getCollectionByName('todos');
+    const todosRecord = await todosCollection.findOne({ chatId: ctx.message.chat.id });
 
     const parameters = getMessageParameters(ctx);
 
@@ -32,10 +32,10 @@ module.exports = {
             ctx.reply('No podés inscribirte dos veces!')
             return;
           }
-          await todosCollection.updateOne( {
-            _id: todosRecord._id,
-            $push: { usernames: usernameRequest }
-          });
+          await todosCollection.updateOne(
+            { _id: todosRecord._id },
+            { $push: { usernames: usernameRequest } }
+          );
           ctx.reply('Agregado 👍');
           break;
 
@@ -45,10 +45,10 @@ module.exports = {
             return;
           }
           const usernamesToUpdate = todosRecord.usernames.filter((username) => username !== usernameRequest);
-          await todosCollection.updateOne( {
-            _id: todosRecord._id,
-            $set: { names: usernamesToUpdate }
-          });
+          await todosCollection.updateOne(
+            { _id: todosRecord._id },
+            { $set: { names: usernamesToUpdate } }
+          );
           ctx.reply('Eliminado 👍');
           break;
       }

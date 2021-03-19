@@ -38,7 +38,7 @@ describe('todos command', () => {
 
     getCollectionByName.mockImplementation((_) => {
       return {
-        find: findMock,
+        findOne: findMock,
       }
     });
 
@@ -58,7 +58,7 @@ describe('todos command', () => {
 
     getCollectionByName.mockImplementation((_) => {
       return {
-        find: findMock,
+        findOne: findMock,
       }
     });
 
@@ -82,7 +82,7 @@ describe('todos command', () => {
 
     getCollectionByName.mockImplementation((_) => {
       return {
-        find: findMock,
+        findOne: findMock,
         updateOne: updateOneMock
       }
     });
@@ -90,10 +90,10 @@ describe('todos command', () => {
     await todos.handle(ctx);
 
     expect(findMock).toHaveBeenCalledWith({ chatId: 1 });
-    expect(updateOneMock).toHaveBeenCalledWith({
-      _id: 1,
-      $push: { usernames: 'jns' }
-    });
+    expect(updateOneMock).toHaveBeenCalledWith(
+      { _id: 1 },
+      { $push: { usernames: 'jns' } }
+    );
     expect(ctx.reply).toHaveBeenCalledWith('Agregado 👍');
   });
 
@@ -109,7 +109,7 @@ describe('todos command', () => {
 
     getCollectionByName.mockImplementation((_) => {
       return {
-        find: findMock
+        findOne: findMock
       }
     });
 
@@ -133,7 +133,7 @@ describe('todos command', () => {
 
     getCollectionByName.mockImplementation((_) => {
       return {
-        find: findMock,
+        findOne: findMock,
         updateOne: updateOneMock
       }
     });
@@ -141,10 +141,10 @@ describe('todos command', () => {
     await todos.handle(ctx);
 
     expect(findMock).toHaveBeenCalledWith({ chatId: 1 });
-    expect(updateOneMock).toHaveBeenCalledWith({
-      _id: 1,
-      $set: { names: [] }
-    });
+    expect(updateOneMock).toHaveBeenCalledWith(
+      { _id: 1 },
+      { $set: { names: [] } }
+    );
     expect(ctx.reply).toHaveBeenCalledWith('Eliminado 👍');
   });
 
@@ -160,7 +160,7 @@ describe('todos command', () => {
 
     getCollectionByName.mockImplementation((_) => {
       return {
-        find: findMock
+        findOne: findMock
       }
     });
 

@@ -31,7 +31,7 @@ describe('falta envido command', () => {
 
     getCollectionByName.mockImplementation((_) => {
       return {
-        find: findMock,
+        findOne: findMock,
         updateOne: updateOneMock
       }
     });
@@ -41,7 +41,7 @@ describe('falta envido command', () => {
     expect(findMock).toHaveBeenCalledWith({ chatId: 1 });
     expect(ctxTo.reply).toHaveBeenCalled();
     expect(ctxTo.reply.mock.calls[0][0].includes('Tantos')).toBe(true);
-    expect(updateOneMock).toHaveBeenCalledWith({ _id: 1, $set: { cantadoBy: undefined } });
+    expect(updateOneMock).toHaveBeenCalledWith({ _id: 1 }, { $set: { cantadoBy: undefined } });
   });
 
   test('Nobody said falta envido', async () => {
@@ -55,7 +55,7 @@ describe('falta envido command', () => {
 
     getCollectionByName.mockImplementation((_) => {
       return {
-        find: findMock,
+        findOne: findMock,
         updateOne: updateOneMock
       }
     });
@@ -78,7 +78,7 @@ describe('falta envido command', () => {
 
     getCollectionByName.mockImplementation((_) => {
       return {
-        find: findMock,
+        findOne: findMock,
         updateOne: updateOneMock
       }
     });
