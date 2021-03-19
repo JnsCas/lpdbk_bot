@@ -35,7 +35,7 @@ describe('series command', () => {
 
     getCollectionByName.mockImplementation((_) => {
       return {
-        find: findMock,
+        findOne: findMock,
         updateOne: updateOneMock
       }
     });
@@ -50,10 +50,10 @@ describe('series command', () => {
 
     await seriesCommand.handle(ctx);
 
-    expect(updateOneMock).toHaveBeenCalledWith({
-      _id: 1,
-      $set: { names: ['Serie1', 'Serie2', 'Serie3'] }
-    });
+    expect(updateOneMock).toHaveBeenCalledWith(
+      { _id: 1 },
+      { $set: { names: ['Serie1', 'Serie2', 'Serie3'] } }
+    );
     expect(ctx.reply).toHaveBeenCalledWith('1) Serie1\n2) Serie2\n3) Serie3');
   });
 
@@ -64,10 +64,10 @@ describe('series command', () => {
       await seriesCommand.handle(ctx);
 
       expect(findMock).toHaveBeenCalledWith({ chatId: 1 });
-      expect(updateOneMock).toHaveBeenCalledWith({
-        _id: 1,
-        $set: { names: ['Serie1', 'Serie3', 'Serie4'] }
-      });
+      expect(updateOneMock).toHaveBeenCalledWith(
+        { _id: 1 },
+        { $set: { names: ['Serie1', 'Serie3', 'Serie4'] } }
+      );
       expect(ctx.reply).toHaveBeenCalledWith('1) Serie1\n2) Serie3\n3) Serie4');
     });
     test('delete the third', async () => {
@@ -76,10 +76,10 @@ describe('series command', () => {
       await seriesCommand.handle(ctx);
 
       expect(findMock).toHaveBeenCalledWith({ chatId: 1 });
-      expect(updateOneMock).toHaveBeenCalledWith({
-        _id: 1,
-        $set: { names: ['Serie1', 'Serie2', 'Serie4'] }
-      });
+      expect(updateOneMock).toHaveBeenCalledWith(
+        { _id: 1 },
+        { $set: { names: ['Serie1', 'Serie2', 'Serie4'] } }
+      );
       expect(ctx.reply).toHaveBeenCalledWith('1) Serie1\n2) Serie2\n3) Serie4');
     });
   });
@@ -90,10 +90,10 @@ describe('series command', () => {
     await seriesCommand.handle(ctx);
 
     expect(findMock).toHaveBeenCalledWith({ chatId: 1 });
-    expect(updateOneMock).toHaveBeenCalledWith({
-      _id: 1,
-      $set: { names: ['Serie2', 'Serie3', 'Serie4'] }
-    });
+    expect(updateOneMock).toHaveBeenCalledWith(
+      { _id: 1 },
+      { $set: { names: ['Serie2', 'Serie3', 'Serie4'] } }
+    );
     expect(ctx.reply).toHaveBeenCalledWith('1) Serie2\n2) Serie3\n3) Serie4');
   });
 
@@ -101,23 +101,33 @@ describe('series command', () => {
     ctx.update.message.text = '/series add adding something new';
 
     updateOneMock.mockReturnValueOnce({
-      _id: 1,
-      names: [
-        "Serie1",
-        "Serie2",
-        "Serie3",
-        "Serie4",
-        "adding something new"
-      ]
+      value: {
+        _id: 1,
+        names: [
+          "Serie1",
+          "Serie2",
+          "Serie3",
+          "Serie4",
+          "adding something new"
+        ]
+      }
+    });
+
+    getCollectionByName.mockImplementation((_) => {
+      return {
+        findOne: findMock,
+        findOneAndUpdate: updateOneMock
+      }
     });
 
     await seriesCommand.handle(ctx);
 
     expect(findMock).toHaveBeenCalledWith({ chatId: 1 });
-    expect(updateOneMock).toHaveBeenCalledWith({
-      _id: 1,
-      $push: { names: 'adding something new' }
-    });
+    expect(updateOneMock).toHaveBeenCalledWith(
+      { _id: 1 },
+      { $push: { names: 'adding something new' } },
+      { returnOriginal: false }
+    );
     expect(ctx.reply).toHaveBeenCalledWith('1) Serie1\n2) Serie2\n3) Serie3\n4) Serie4\n5) adding something new');
   });
 });

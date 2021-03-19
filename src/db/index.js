@@ -1,24 +1,27 @@
 const { MongoClient } = require("mongodb");
 const { collectionsData } = require('./collections');
 
-let client,
-  database,
+const userDB = process.env.USER_DB;
+const passwordDB = process.env.PASSWORD_DB;
+const clusterUrlDB = process.env.CLUSTER_URL_DB;
+
+const uri = `mongodb+srv://${userDB}:${passwordDB}@${clusterUrlDB}`;
+
+let database,
   collections = {};
+
+const connectDatabase = async () => {
+  const client = new MongoClient(uri);
+  await client.connect();
+  database = client.db('lpdbk_bot');
+}
 
 module.exports = {
 
   initDB: async (ctx) => {
-    const userDB = process.env.USER_DB;
-    const passwordDB = process.env.PASSWORD_DB;
-    const clusterUrlDB = process.env.CLUSTER_URL_DB;
-
-    const uri = `mongodb+srv://${userDB}:${passwordDB}@${clusterUrlDB}`;
-
-    client = new MongoClient(uri);
 
     try {
-      await client.connect();
-      database = client.db('lpdbk_bot');
+      await setDatabase();
 
       const chatId = ctx.message.chat.id;
 
@@ -28,7 +31,7 @@ module.exports = {
         //insert if chatId does not exist
         await collection.updateOne(
           { chatId: chatId },
-          { $setOnInsert: { chatId, ...defaultData, createdAt: Date.now() } },
+          { $setOnInsert: { chatId, ...defaultData, createdAt: new Date() } },
           { upsert: true }
         );
 
@@ -51,6 +54,18 @@ module.exports = {
     }
   },
 
-  getCollectionByName: (name) => collections[name]
+  getCollectionByName: async (name) => {
+    if (Object.keys(collections).length !== 0) {
+      return collections[name];
+    }
+
+    if (!database) {
+      await connectDatabase();
+      for (const collectionData of collectionsData) {
+        collections[collectionData.name] = await database.collection(collectionData.name);
+      }
+      return collections[name];
+    }
+  }
 
 };

@@ -12,8 +12,8 @@ try {
   bot.on('sticker', (ctx) => ctx.reply('👍'))
   commands(bot);
   scheduler(bot);
-  await bot.launch();
+  bot.launch();
 } catch (e) {
-  await closeDB();
+  closeDB();
   throw e;
 }

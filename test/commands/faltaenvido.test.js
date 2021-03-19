@@ -38,7 +38,7 @@ describe('falta envido command', () => {
 
     getCollectionByName.mockImplementation((_) => {
       return {
-        find: findMock,
+        findOne: findMock,
         updateOne: updateOneMock
       }
     });
@@ -55,7 +55,7 @@ describe('falta envido command', () => {
     expect(findMock).toHaveBeenCalledWith({ chatId: 1 });
     expect(ctx.reply).toHaveBeenCalled();
     expect(ctx.reply.mock.calls[0][0].includes('FALTA ENVIDOOOO CHEEEE')).toBe(true);
-    expect(updateOneMock).toHaveBeenCalledWith({ _id: 1, $set: { cantadoBy: 'jns' } });
+    expect(updateOneMock).toHaveBeenCalledWith({ _id: 1 }, { $set: { cantadoBy: 'jns' } });
   });
   test('shot falta envido and reject shot twice', async () => {
 
@@ -63,7 +63,7 @@ describe('falta envido command', () => {
 
     expect(ctx.reply).toHaveBeenCalled();
     expect(ctx.reply.mock.calls[0][0].includes('FALTA ENVIDOOOO CHEEEE')).toBe(true);
-    expect(updateOneMock).toHaveBeenCalledWith({ _id: 1, $set: { cantadoBy: 'jns' } });
+    expect(updateOneMock).toHaveBeenCalledWith({ _id: 1 }, { $set: { cantadoBy: 'jns' } });
 
     await faltaEnvido.handle(ctx);
     expect(ctx.reply).toHaveBeenCalled();
@@ -80,6 +80,6 @@ describe('falta envido command', () => {
     await faltaEnvido.handle(ctx);
 
     expect(ctx.reply).toHaveBeenCalled();
-    expect(updateOneMock).toHaveBeenCalledWith({ _id: 1, $set: { cantadoBy: 'jns_first_name' } });
+    expect(updateOneMock).toHaveBeenCalledWith({ _id: 1 }, { $set: { cantadoBy: 'jns_first_name' } });
   });
 });

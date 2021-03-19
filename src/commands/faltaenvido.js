@@ -6,8 +6,8 @@ module.exports = {
   handle: async (ctx) => {
     const helpMessage = '\n\nPara contestar usa los comandos /quiero ó /noquiero.'
 
-    const faltaenvidoCollection = getCollectionByName('falta-envido');
-    const faltaenvidoRecord = await faltaenvidoCollection.find({ chatId: ctx.message.chat.id });
+    const faltaenvidoCollection = await getCollectionByName('falta-envido');
+    const faltaenvidoRecord = await faltaenvidoCollection.findOne({ chatId: ctx.message.chat.id });
     if (faltaenvidoRecord.cantadoBy) {
       ctx.reply(`La falta ya está cantada por ${faltaenvidoRecord.cantadoBy}.${helpMessage}`);
     } else {
@@ -15,7 +15,7 @@ module.exports = {
       const phrase = faltaenvidoRecord.phrases[randomNumber(faltaenvidoRecord.phrases.length) - 1];
       ctx.reply(`FALTA ENVIDOOOO CHEEEE\n${phrase.replace('%s', usernameFrom)}${helpMessage}`);
 
-      await faltaenvidoCollection.updateOne({ _id: faltaenvidoRecord._id, $set: { cantadoBy: usernameFrom } });
+      await faltaenvidoCollection.updateOne({ _id: faltaenvidoRecord._id } , { $set: { cantadoBy: usernameFrom } } );
     }
   }
 }

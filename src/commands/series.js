@@ -4,8 +4,8 @@ const { getMessageParameters } = require('../util/messageParameters');
 module.exports = {
   name: 'series',
   handle: async (ctx) => {
-    const seriesCollection = getCollectionByName('series');
-    const seriesRecord = await seriesCollection.find({ chatId: ctx.message.chat.id });
+    const seriesCollection = await getCollectionByName('series');
+    const seriesRecord = await seriesCollection.findOne({ chatId: ctx.message.chat.id });
     const parameters = getMessageParameters(ctx);
 
     let names = seriesRecord.names;
@@ -13,11 +13,12 @@ module.exports = {
       switch (parameters.first) {
         case 'add':
         case 'agregar':
-          const recordUpdated = await seriesCollection.updateOne( {
-            _id: seriesRecord._id,
-            $push: { names: parameters.second }
-          });
-          names = recordUpdated.names;
+          const recordUpdated = await seriesCollection.findOneAndUpdate(
+            { _id: seriesRecord._id },
+            { $push: { names: parameters.second } },
+            { returnOriginal: false }
+          );
+          names = recordUpdated.value.names;
           break;
 
         case 'delete':
@@ -27,16 +28,16 @@ module.exports = {
             return;
           }
           seriesRecord.names.splice(indexToDelete, 1);
-          await seriesCollection.updateOne( {
-            _id: seriesRecord._id,
-            $set: { names: seriesRecord.names }
-          });
+          await seriesCollection.updateOne(
+            { _id: seriesRecord._id },
+            { $set: { names: seriesRecord.names } }
+          );
           names = seriesRecord.names;
           break;
       }
     }
 
-    const result = names.map((serie, index) => `${index + 1}) ${serie}`).join('\n');
+    const result = names.map((serie, index) => `${index + 1}) ${serie}`).join('\n') || 'No tengo series para recomendarte.';
     ctx.reply(result);
   }
 }
