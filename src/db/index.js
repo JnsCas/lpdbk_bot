@@ -8,10 +8,11 @@ const clusterUrlDB = process.env.CLUSTER_URL_DB;
 const uri = `mongodb+srv://${userDB}:${passwordDB}@${clusterUrlDB}`;
 
 let database,
+  client,
   collections = {};
 
 const connectDatabase = async () => {
-  const client = new MongoClient(uri);
+  client = new MongoClient(uri);
   await client.connect();
   database = client.db('lpdbk_bot');
 }
@@ -21,7 +22,7 @@ module.exports = {
   initDB: async (ctx) => {
 
     try {
-      await setDatabase();
+      await connectDatabase();
 
       const chatId = ctx.message.chat.id;
 
