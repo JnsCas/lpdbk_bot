@@ -94,7 +94,7 @@ describe('todos command', () => {
       { _id: 1 },
       { $push: { usernames: 'jns' } }
     );
-    expect(ctx.reply).toHaveBeenCalledWith('Agregado 👍');
+    expect(ctx.reply).toHaveBeenCalledWith('Agregado @jns 👍');
   });
 
   test('in twice', async () => {
@@ -116,7 +116,7 @@ describe('todos command', () => {
     await todos.handle(ctx);
 
     expect(findMock).toHaveBeenCalledWith({ chatId: 1 });
-    expect(ctx.reply).toHaveBeenCalledWith('No podés inscribirte dos veces!');
+    expect(ctx.reply).toHaveBeenCalledWith('No podés inscribirte dos veces @jns!');
   });
 
   test('out', async () => {
@@ -145,7 +145,7 @@ describe('todos command', () => {
       { _id: 1 },
       { $set: { names: [] } }
     );
-    expect(ctx.reply).toHaveBeenCalledWith('Eliminado 👍');
+    expect(ctx.reply).toHaveBeenCalledWith('Eliminado @jns 👍');
   });
 
   test('out twice', async () => {
@@ -167,7 +167,57 @@ describe('todos command', () => {
     await todos.handle(ctx);
 
     expect(findMock).toHaveBeenCalledWith({ chatId: 1 });
-    expect(ctx.reply).toHaveBeenCalledWith('No estabas inscripto 🤷‍')
+    expect(ctx.reply).toHaveBeenCalledWith('No estabas inscripto @jns 🤷‍')
+  });
+
+  test('todos', async () => {
+    ctx.update.message.text = '/todos';
+    ctx.update.message.from.username = 'jns';
+
+    const findMock = jest.fn().mockResolvedValueOnce({
+      _id: 1,
+      chatId: 1,
+      usernames: ['jns', 'otro1', 'otro2']
+    });
+
+    getCollectionByName.mockImplementation((_) => {
+      return {
+        findOne: findMock
+      }
+    });
+
+    await todos.handle(ctx);
+
+    expect(findMock).toHaveBeenCalledWith({ chatId: 1 });
+    expect(ctx.reply).toHaveBeenCalledWith('jns:\n' +
+      '@otro1\n' +
+      '@otro2'
+    );
+  });
+
+  test('todos with extra text', async () => {
+    ctx.update.message.text = '/todos with extra text';
+    ctx.update.message.from.username = 'jns';
+
+    const findMock = jest.fn().mockResolvedValueOnce({
+      _id: 1,
+      chatId: 1,
+      usernames: ['jns', 'otro1', 'otro2']
+    });
+
+    getCollectionByName.mockImplementation((_) => {
+      return {
+        findOne: findMock
+      }
+    });
+
+    await todos.handle(ctx);
+
+    expect(findMock).toHaveBeenCalledWith({ chatId: 1 });
+    expect(ctx.reply).toHaveBeenCalledWith('jns:\n' +
+      '@otro1\n' +
+      '@otro2'
+    );
   });
 
 });
