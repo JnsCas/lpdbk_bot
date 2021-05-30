@@ -8,7 +8,8 @@ const commands = [
   require('./faltaenvido'),
   require('./quiero'),
   require('./noquiero'),
-  require('./todos')
+  require('./todos'),
+  require('./send')
 ]
 
 module.exports = (bot) => {
