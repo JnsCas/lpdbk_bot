@@ -22,7 +22,7 @@ module.exports = {
       } else if (todosUsernamesCandidates.length === 0) {
         ctx.reply(`No hay nadie inscripto para arrobar 🤷‍`);
       } else {
-        ctx.reply(todosUsernamesCandidates.reduce((acc, username) => `${acc}\n@${username}`));
+        ctx.reply(todosUsernamesCandidates.map((username) => `@${username}`).join('\n'));
       }
     } else {
       const alreadyExists = todosRecord.usernames.includes(usernameRequest);
