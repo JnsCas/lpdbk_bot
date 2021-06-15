@@ -1,23 +1,27 @@
 const { getCollectionByName } = require('../db');
-const { getRandomFileId, getPhotosElement } = require('./util');
+const { getRandomFileId } = require('./util');
 
 module.exports = {
   name: 'asados',
   handle: async (ctx) => {
     try {
-      await ctx.telegram.sendChatAction(ctx.message.chat.id, "upload_photo");
+      const photoCollection = await getCollectionByName('photos');
+      const photoRecord = await photoCollection.findOne({ chatId: ctx.message.chat.id });
+      const categoryIndex = photoRecord.categories.findIndex((category) => category.name === 'asados');
 
-      const { photosObject, photosIndex } = await getPhotosElement(ctx.message.chat.id, 'asados');
-      if (photosObject?.fileIds.length > 0) {
-        const fileIdSelected = getRandomFileId(photosObject);
-        const photoCollection = await getCollectionByName('photos');
+      const category = photoRecord.categories[categoryIndex];
+      if (category.fileIds.length > 0) {
+        await ctx.telegram.sendChatAction(ctx.message.chat.id, "upload_photo");
+        const fileIdSelected = getRandomFileId(category);
         await photoCollection.updateOne(
           { chatId: ctx.message.chat.id },
-          { $set: { [`photos.${photosIndex}.lastFileIdSent`]: fileIdSelected } },
+          { $set: { [`categories.${categoryIndex}.lastFileIdSent`]: fileIdSelected } },
         );
         await ctx.replyWithPhoto(
           fileIdSelected,
           { reply_to_message_id: ctx.message.message_id });
+      } else {
+        ctx.reply('No hay fotos para enviar. Podes subirlas utilizando el comando /subirfoto')
       }
 
     } catch (e) {

@@ -1,5 +1,4 @@
 const { randomNumberRange } = require('../../util/randomNumber');
-const { getCollectionByName } = require('../../db');
 
 const getRandomFileId = ({ fileIds, lastFileIdSent }) => {
   const pickFileId = (fileIds) => {
@@ -16,21 +15,6 @@ const getRandomFileId = ({ fileIds, lastFileIdSent }) => {
   return fileIdSelected;
 };
 
-const getPhotosElement = async (chatId, category) => {
-  const photoCollection = await getCollectionByName('photos');
-  const photoRecord = await photoCollection.findOne({ chatId: chatId });
-  const photosIndex = photoRecord.photos.findIndex((photo) => photo.category === category);
-  if (photosIndex < 0) {
-    return;
-  }
-
-  return {
-    photosObject: photoRecord.photos[photosIndex],
-    photosIndex
-  };
-};
-
 module.exports = {
   getRandomFileId,
-  getPhotosElement
 };

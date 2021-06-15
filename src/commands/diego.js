@@ -1,7 +1,7 @@
 const { getCollectionByName } = require('../db');
 const { randomNumberRange } = require('../util/randomNumber');
 const flickrClient = require('../clients/flickr.client');
-const { getRandomFileId, getPhotosElement } = require('./util');
+const { getRandomFileId } = require('./util');
 
 module.exports = {
   name: 'diego',
@@ -9,14 +9,17 @@ module.exports = {
     try {
       await ctx.telegram.sendChatAction(ctx.message.chat.id, "upload_photo");
 
+      const photoCollection = await getCollectionByName('photos');
+      const photoRecord = await photoCollection.findOne({ chatId: ctx.message.chat.id });
+      const categoryIndex = photoRecord.categories.findIndex((category) => category.name === 'diego');
+
       const randomNumber = randomNumberRange(1, 10);
-      const { photosObject, photosIndex } = await getPhotosElement(ctx.message.chat.id, 'diego');
-      if (randomNumber < 7 && photosObject?.fileIds.length > 0) {
-        const fileIdSelected = getRandomFileId(photosObject);
-        const photoCollection = await getCollectionByName('photos');
+      const category = photoRecord.categories[categoryIndex];
+      if (randomNumber < 7 && category.fileIds.length > 0) {
+        const fileIdSelected = getRandomFileId(category);
         await photoCollection.updateOne(
           { chatId: ctx.message.chat.id },
-          { $set: { [`photos.${photosIndex}.lastFileIdSent`]: fileIdSelected } },
+          { $set: { [`categories.${categoryIndex}.lastFileIdSent`]: fileIdSelected } },
         );
         await ctx.replyWithPhoto(
           fileIdSelected,

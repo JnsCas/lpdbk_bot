@@ -1,26 +1,15 @@
 module.exports = {
   name: 'photos',
   defaultData: {
-    photos: [
+    categories: [
       {
-        category: 'diego',
+        name: 'diego',
         fileIds: []
       },
       {
-        category: 'asados',
+        name: 'asados',
         fileIds: []
       }
     ]
   }
 };
-
-/*
-{
-  chatId: 123,
-  photos: [
-    {
-      category: 'diego',
-      fileIds: ['asd', 'dsa']
-    }
-  ]
-}*/
