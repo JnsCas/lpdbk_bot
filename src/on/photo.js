@@ -4,12 +4,12 @@ module.exports = {
   name: 'photo',
   handle: async (ctx) => {
     try {
-      const [category] = ctx.message.caption.split(' ');
-      if (!category) {
+      const caption = ctx.message.caption;
+      if (!caption) {
         ctx.reply(`Para subir una foto tenés que ingresar la categoría en la descripción`, { reply_to_message_id: ctx.message.message_id });
         return;
       }
-
+      const [category] = caption.split(' ');
       const photosCollection = await getCollectionByName('photos');
       const photoRecord = await photosCollection.findOne({ chatId: ctx.message.chat.id });
       const categoryIndex = photoRecord.categories.findIndex((c) => c.name === category.toLowerCase());
