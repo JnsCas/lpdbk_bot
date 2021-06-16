@@ -4,9 +4,9 @@ module.exports = {
   name: 'photo',
   handle: async (ctx) => {
     try {
-      const caption = ctx.message.caption;
+      const caption = ctx.message?.caption;
       if (!caption) {
-        ctx.reply(`Para subir una foto tenés que ingresar la categoría en la descripción`, { reply_to_message_id: ctx.message.message_id });
+        ctx.reply(`Para subir una foto tenés que ingresar la categoría en la descripción`);
         return;
       }
       const [category] = caption.split(' ');
@@ -34,7 +34,7 @@ module.exports = {
       }
     } catch (e) {
       console.log(`Error uploading photo: `, e);
-      ctx.reply('Algo salió mal 👎', { reply_to_message_id: ctx.message.message_id });
+      ctx.reply('Algo salió mal 👎');
     }
   }
 }
