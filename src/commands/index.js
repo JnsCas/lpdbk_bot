@@ -10,7 +10,6 @@ const commands = [
   require('./noquiero'),
   require('./todos'),
   require('./send'),
-  require('./subirfoto')
 ]
 
 module.exports = (bot) => {

@@ -4,17 +4,20 @@ module.exports = {
   name: 'photo',
   handle: async (ctx) => {
     try {
-      const caption = ctx.message?.caption;
-      if (!caption) {
-        ctx.reply(`Para subir una foto tenés que ingresar la categoría en la descripción`);
+      const caption = ctx.message.caption;
+      if (!caption || caption.slice(0,1) !== '/') {
+        ctx.reply(`Para subir una foto tenés que ingresar la categoría en la descripción. Por ejemplo '/diego'`);
         return;
       }
-      const [category] = caption.split(' ');
+      const category = caption.slice(1, caption.length).toLowerCase();
       const photosCollection = await getCollectionByName('photos');
       const photoRecord = await photosCollection.findOne({ chatId: ctx.message.chat.id });
-      const categoryIndex = photoRecord.categories.findIndex((c) => c.name === category.toLowerCase());
+      const categoryIndex = photoRecord.categories.findIndex((c) => c.name === category);
       if (categoryIndex < 0) {
-        ctx.reply(`La categoría '${category}' no existe 🤷‍♂️`, { reply_to_message_id: ctx.message.message_id });
+        ctx.reply(
+          `La categoría '${category}' no existe 🤷‍♂️`,
+          { reply_to_message_id: ctx.message.message_id }
+        );
         return;
       }
 
