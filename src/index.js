@@ -15,6 +15,6 @@ try {
   initOn(bot);
   bot.launch();
 } catch (e) {
-  await closeDB();
+  closeDB();
   throw e;
 }
