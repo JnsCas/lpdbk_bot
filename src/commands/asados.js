@@ -21,7 +21,7 @@ module.exports = {
           fileIdSelected,
           { reply_to_message_id: ctx.message.message_id });
       } else {
-        ctx.reply('No hay fotos para enviar. Podes subirlas utilizando el comando /subirfoto')
+        ctx.reply('No hay fotos para enviar. Podes subirlas enviando una foto con la descripción /asados')
       }
 
     } catch (e) {
