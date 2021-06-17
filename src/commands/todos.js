@@ -15,43 +15,43 @@ module.exports = {
 
     const parameters = getMessageParameters(ctx);
 
-    if (!parameters.hasFirstParameter) {
-      const todosUsernamesCandidates = todosRecord.usernames.filter((username) => username !== usernameRequest);
-      if (todosUsernamesCandidates.length === todosRecord.usernames.length) {
-        ctx.reply(`Para poder utilizar este comando necesitas inscribirte enviando "/todos in"`);
-      } else if (todosUsernamesCandidates.length === 0) {
-        ctx.reply(`No hay nadie inscripto para arrobar 🤷‍`);
-      } else {
-        ctx.reply(todosUsernamesCandidates.map((username) => `@${username}`).join('\n'));
-      }
-    } else {
-      const alreadyExists = todosRecord.usernames.includes(usernameRequest);
-      switch (parameters.first) {
-        case 'in':
-          if (alreadyExists) {
-            ctx.reply('No podés inscribirte dos veces!')
-            return;
-          }
-          await todosCollection.updateOne(
-            { _id: todosRecord._id },
-            { $push: { usernames: usernameRequest } }
-          );
-          ctx.reply('Agregado 👍');
-          break;
+    const alreadyExists = todosRecord.usernames.includes(usernameRequest);
+    switch (parameters.first) {
+      case 'in':
+        if (alreadyExists) {
+          ctx.reply(`No podés inscribirte dos veces @${usernameRequest}!`)
+          return;
+        }
+        await todosCollection.updateOne(
+          { _id: todosRecord._id },
+          { $push: { usernames: usernameRequest } }
+        );
+        ctx.reply(`Agregado @${usernameRequest} 👍`);
+        break;
 
-        case 'out':
-          if (!alreadyExists) {
-            ctx.reply('No estabas inscripto 🤷‍');
-            return;
-          }
-          const usernamesToUpdate = todosRecord.usernames.filter((username) => username !== usernameRequest);
-          await todosCollection.updateOne(
-            { _id: todosRecord._id },
-            { $set: { names: usernamesToUpdate } }
-          );
-          ctx.reply('Eliminado 👍');
-          break;
-      }
+      case 'out':
+        if (!alreadyExists) {
+          ctx.reply(`No estabas inscripto @${usernameRequest} 🤷‍`);
+          return;
+        }
+        const usernamesToUpdate = todosRecord.usernames.filter((username) => username !== usernameRequest);
+        await todosCollection.updateOne(
+          { _id: todosRecord._id },
+          { $set: { usernames: usernamesToUpdate } }
+        );
+        ctx.reply(`Eliminado @${usernameRequest} 👍`);
+        break;
+
+      default:
+        const todosUsernamesCandidates = todosRecord.usernames.filter((username) => username !== usernameRequest);
+        if (todosUsernamesCandidates.length === todosRecord.usernames.length) {
+          ctx.reply(`Para poder utilizar este comando necesitas inscribirte enviando "/todos in"`);
+        } else if (todosUsernamesCandidates.length === 0) {
+          ctx.reply(`No hay nadie inscripto para arrobar 🤷‍`);
+        } else {
+          ctx.reply(`${usernameRequest}:\n${todosUsernamesCandidates.map((username) => `@${username}`).join('\n')}`);
+        }
+        break;
     }
   }
 }
