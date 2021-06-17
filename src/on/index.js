@@ -1,6 +1,5 @@
 const onList = [
-  require('./photo'),
-  require('./sticker')
+  require('./photo')
 ];
 
 module.exports = (bot) => {
