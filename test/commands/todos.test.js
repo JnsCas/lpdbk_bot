@@ -143,7 +143,7 @@ describe('todos command', () => {
     expect(findMock).toHaveBeenCalledWith({ chatId: 1 });
     expect(updateOneMock).toHaveBeenCalledWith(
       { _id: 1 },
-      { $set: { names: [] } }
+      { $set: { usernames: [] } }
     );
     expect(ctx.reply).toHaveBeenCalledWith('Eliminado @jns 👍');
   });
