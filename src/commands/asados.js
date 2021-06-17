@@ -25,7 +25,7 @@ module.exports = {
       }
 
     } catch (e) {
-      console.log(`Error with command ${this.name}: `, e);
+      console.error(`Error with command ${this.name}: `, e);
       ctx.reply('No se por qué, pero no puedo mandarte fotos de asados en este momento. Perdoname.');
     }
   }

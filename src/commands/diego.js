@@ -29,7 +29,7 @@ module.exports = {
         await ctx.replyWithPhoto(urlPhoto, { reply_to_message_id: ctx.message.message_id });
       }
     } catch (e) {
-      console.log(`Error with command ${this.name}: `, e);
+      console.error(`Error with command ${this.name}: `, e);
       ctx.reply(
         'No se por qué, pero no puedo mandarte fotos del Diego en este momento. Perdoname.',
         { reply_to_message_id: ctx.message.message_id }

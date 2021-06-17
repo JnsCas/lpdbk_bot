@@ -28,7 +28,7 @@ module.exports = {
     });
 
     if (body.stat !== 'ok') {
-      console.log(`Error getting photo by tag: ${tag}`);
+      console.error(`Error getting photo by tag: ${tag}`);
       return;
     }
 

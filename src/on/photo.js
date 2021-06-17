@@ -6,16 +6,15 @@ module.exports = {
     try {
       const caption = ctx.message.caption;
       if (!caption || caption.slice(0,1) !== '/') {
-        ctx.reply(`Para subir una foto tenés que ingresar la categoría en la descripción. Por ejemplo '/diego'`);
         return;
       }
-      const category = caption.slice(1, caption.length).toLowerCase();
+      const categoryName = caption.slice(1, caption.length).toLowerCase();
       const photosCollection = await getCollectionByName('photos');
       const photoRecord = await photosCollection.findOne({ chatId: ctx.message.chat.id });
-      const categoryIndex = photoRecord.categories.findIndex((c) => c.name === category);
+      const categoryIndex = photoRecord.categories.findIndex((c) => c.name === categoryName);
       if (categoryIndex < 0) {
         ctx.reply(
-          `La categoría '${category}' no existe 🤷‍♂️`,
+          `La categoría '${categoryName}' no existe 🤷‍♂️`,
           { reply_to_message_id: ctx.message.message_id }
         );
         return;
@@ -31,12 +30,12 @@ module.exports = {
         { $push: { [`categories.${categoryIndex}.fileIds`]: fileIdToUpload } }
       );
       if (result.modifiedCount) {
-        ctx.reply(`Foto agregada a la categoria '${category}' 👍`, { reply_to_message_id: ctx.message.message_id });
+        ctx.reply(`Foto agregada a la categoria '${categoryName}' 👍`, { reply_to_message_id: ctx.message.message_id });
       } else {
         ctx.reply('Algo salió mal 👎', { reply_to_message_id: ctx.message.message_id });
       }
     } catch (e) {
-      console.log(`Error uploading photo: `, e);
+      console.error(`Error uploading photo: `, e);
       ctx.reply('Algo salió mal 👎');
     }
   }

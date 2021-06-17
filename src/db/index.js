@@ -44,7 +44,7 @@ module.exports = {
       }
 
     } catch (e) {
-      console.log('Error initializing database', e);
+      console.error('Error initializing database', e);
       throw e;
     }
   },
