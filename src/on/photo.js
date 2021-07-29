@@ -36,7 +36,7 @@ module.exports = {
       }
     } catch (e) {
       console.error(`Error uploading photo: `, e);
-      ctx.reply('Algo salió mal 👎');
+      ctx.reply('Algo salió mal 👎', { reply_to_message_id: ctx.message.message_id });
     }
   }
 }
