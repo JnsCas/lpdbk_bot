@@ -107,6 +107,6 @@ resources/images/diego
 resources/images/asados
 
 .idea
-resources/lists/*
+resources/*
 
 notes
