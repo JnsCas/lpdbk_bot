@@ -96,11 +96,17 @@ const cronDayLefts = [
 
 const DAY_LEFTS = 44
 
+function isBeforeToday(dateString) {
+  return new Date(dateString) < new Date()
+}
+
 module.exports = (bot) => {
   cronDayLefts.forEach((dateString, index) => {
-    const job = new CronJob(new Date(dateString), function() {
-      bot.telegram.sendPhoto(process.env.CHAT_ID, { source: `resources/images/tigre/${DAY_LEFTS - index}.jpeg` })
-    }, null, true, 'America/Argentina/Buenos_Aires');
-    job.start();
+    if (!isBeforeToday(dateString)) {
+      const job = new CronJob(new Date(dateString), function() {
+        bot.telegram.sendPhoto(process.env.CHAT_ID, { source: `resources/images/tigre/${DAY_LEFTS - index}.jpeg` })
+      }, null, true, 'America/Argentina/Buenos_Aires');
+      job.start();
+    }
   })
 }
