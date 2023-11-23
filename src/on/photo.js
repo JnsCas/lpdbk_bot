@@ -20,7 +20,7 @@ module.exports = {
         return;
       }
 
-      //get file id with biggest size (it is the last one in the array)
+      //get file id with the biggest size (it is the last one in the array)
       const lastFileIdIndex = ctx.message.photo.length - 1;
       const fileIdToUpload = ctx.message.photo[lastFileIdIndex].file_id;
 

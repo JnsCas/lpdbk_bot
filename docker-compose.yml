@@ -1,0 +1,17 @@
+version: '3.2'
+services:
+  lpdbk-bot:
+    image: jnscas/lpdbk_bot:latest
+    environment:
+      - BOT_TOKEN
+      - CHAT_ID
+      - USER_DB
+      - PASSWORD_DB
+      - CLUSTER_URL_DB
+      - ADMIN_USERNAME
+      - FLICKR_CONSUMER_KEY
+      - FLICKR_CONSUMER_SECRET
+      - FLICKR_OAUTH_TOKEN
+      - FLICKR_OAUTH_TOKEN_SECRET
+      - FLICKR_USER_ID
+    restart: always
