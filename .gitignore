@@ -110,3 +110,5 @@ resources/images/asados
 resources/*
 
 notes
+
+.DS_Store
